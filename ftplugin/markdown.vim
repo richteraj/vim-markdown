@@ -40,6 +40,14 @@ if !exists('g:markdown_mapping_switch_status')
   let g:markdown_mapping_switch_status = '<space>'
 endif
 
+if !exists('g:markdown_mapping_indent')
+  let g:markdown_mapping_indent = '<Tab>'
+endif
+
+if !exists('g:markdown_mapping_unindent')
+  let g:markdown_mapping_unindent = '<S-Tab>'
+endif
+
 if !exists('g:markdown_enable_spell_checking')
   let g:markdown_enable_spell_checking = 1
 endif
@@ -161,10 +169,12 @@ if g:markdown_enable_mappings
 
   if g:markdown_enable_insert_mode_mappings
     " Indenting things
-    inoremap <silent> <buffer> <script> <expr> <Tab>
-      \ <SID>IsAnEmptyListItem() \|\| <SID>IsAnEmptyQuote() ? '<C-O>:call <SID>Indent(1)<CR>' : '<Tab>'
-    inoremap <silent> <buffer> <script> <expr> <S-Tab>
-      \ <SID>IsAnEmptyListItem() \|\| <SID>IsAnEmptyQuote() ? '<C-O>:call <SID>Indent(0)<CR>' : '<Tab>'
+    execute 'inoremap <silent> <buffer> <script> <expr> '. g:markdown_mapping_indent .' '.
+      \ "<SID>IsAnEmptyListItem() \\|\\| <SID>IsAnEmptyQuote() ? '<C-O>:call <SID>Indent(1)<CR>' : '".
+      \ g:markdown_mapping_indent ."'"
+    execute 'inoremap <silent> <buffer> <script> <expr> ' . g:markdown_mapping_unindent .' '.
+      \ "<SID>IsAnEmptyListItem() \\|\\| <SID>IsAnEmptyQuote() ? '<C-O>:call <SID>Indent(0)<CR>' : '".
+      \ g:markdown_mapping_unindent ."'"
 
     if g:markdown_drop_empty_blockquotes
       " Remove empty quote and list items when press <CR>
